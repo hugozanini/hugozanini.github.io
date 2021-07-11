@@ -1,0 +1,25 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2021-07-11T00:04:16Z",
+  "id": "0",
+  "duration": 9,
+  "title": "Criando um detector de objetos em tempo real com Tensorflow.js",
+  "summary": "Criando um detector de objetos em tempo real com Tensorflow.js",
+  "source": "object-detection-js.md",
+  "theme": "",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "sdk"
+  ],
+  "tags": [
+    "js"
+  ],
+  "feedback": "https://github.com/hugozanini",
+  "ga": "0",
+  "url": "0"
+}

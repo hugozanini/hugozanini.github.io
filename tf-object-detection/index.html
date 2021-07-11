@@ -1,0 +1,422 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Criando um detector de objetos em tempo real com Tensorflow.js</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="0"
+                  id="0"
+                  title="Criando um detector de objetos em tempo real com Tensorflow.js"
+                  environment="web"
+                  feedback-link="https://github.com/hugozanini">
+    
+      <google-codelab-step label="Antes de você começar" duration="1">
+        <p>Nesse tutorial, vamos dar os primeiros passos com Machine Learning em Javascript. Utilizando Tensorflow.js, iremos construir uma aplicação web capaz de classificar e detectar objetos comuns de nosso dia a dia utilizando a webcam de qualquer dispositivo.</p>
+<p>Ao final, é esperado que você seja capaz de detectar mais de 80 classes diferentes em tempo real e produza resultados como o a seguir:</p>
+<p class="image-container"><img alt="alt text" title="Title" src="img/cc258566b57b8ee7.jpeg"></p>
+<p>Esse tipo de aplicação permite com que você crie inúmeras soluções em sua industria ou situações rotineiras. Imagine detectar e contar as pessoas que encontram-se uma área controlada dentro de uma fábrica ou identificar quando seu cachorro está na cozinha da sua casa e enviar uma mensagem para o seu celular... Tudo isso pode ser feito utilizando o modelo que iremos trabalhar nessa seção.</p>
+<p>Curtiu?</p>
+<p>Então pegue uma dose extra de café e bora criar uma câmera inteligente utilizando Machine Learning 🤓</p>
+<aside class="special"><p>Esse tutorial é focado em mostrar como dar os primeiros passos com modelos pré-treinados em Tensorflow.js. Conceitos e blocos de código que não são relevantes para entender Tensorflow ou Machine Learning não serão explicados.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="O que é o Tensorflow.js?" duration="1">
+        <p class="image-container"><img alt="alt text" title="Title" src="img/58001fdc979d7ce9.png"></p>
+<p>O <a href="https://www.tensorflow.org/js" target="_blank">Tensorflow.js</a> é uma <a href="https://github.com/tensorflow/tfjs" target="_blank">biblioteca aberta de Machine Learning</a> que roda em qualquer lugar que é possível executar aplicações em JavaScript. Ela é baseada na biblioteca do Tensorflow escrita em python e busca recriar toda a experiência de desenvolvimento da API original no ecossistema JavaScript.</p>
+<h2 is-upgraded>Onde ele pode ser utilizado?</h2>
+<p>Dada a portabilidade do JavaScript, é possível executar aplicações de Machine Learning nas seguintes plataformas com facilidade:</p>
+<ul>
+<li>No navegador web diretamente no lado do cliente utilizando JavaScript simples</li>
+<li>Em servidores e dispositivos IoT como Raspberry Pi utilizando Node.js</li>
+<li>Aplicações desktop utilizando Electron</li>
+<li>Aplicativos nativos de smartphone utilizando React Native</li>
+</ul>
+<p>O Tensorflow.js suporta diferentes backends e se adapta de acordo com o ambiente em que está sendo executado. Atualmente, ele suporta as seguintes formas de execução:</p>
+<ul>
+<li><strong>WebGL na placa gráfica do dispositivo (GPU)</strong>: Essa é a maneira mais rápida de executar modelos grandes  (maiores que 3MB) com aceleração em GPU.</li>
+<li><strong>Web Assembly (WASM) na CPU</strong>:  utilizado para melhor a performance de CPUs nos dispositivos - incluindo smartphones de gerações mais antigas. Geralmente é utilizada em modelos pequenos (menores que 3MB) que são mais rápidos ao serem executados em uma CPI com WASM to que com WebGL devido ao overhead se subir com os dados para um processador gráfico.<br>*</li>
+<li><strong>CPU</strong>:  Utilizado quando nenhuma das duas formas de execução anterioes estão disponíveis. É a forma de execução mais lenta.</li>
+</ul>
+<aside class="special"><p>Você pode <a href="https://www.tensorflow.org/js/guide/platform_environment" target="_blank">forçar a execução</a> de qualquer um desses backends caso você saiba em que ambiente a execução será feita, ou deixar que Tensorflow.js escolha a melhor opção para você.</p>
+</aside>
+<h2 is-upgraded>As grandes vantagens de rodar uma aplicação no lado do cliente</h2>
+<p>Rodar aplicações de Machine Learning em um navegador web e no lado do cliente proporciona muitos benefícios que valem a pena ser considerados.</p>
+<p><strong>Privacidade</strong><br>Você pode treinar e classificar dados na máquina do cliente sem a necessidade de enviar nenhuma informação para um servidor.  Muitas vezes, as aplicações esbarram em requerimentos legais para serem desenvolvidas, como a <a href="http://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank">LGPD</a>,  e não podem ter dados trafegando entre servidores. Com o Tensorflow.js é possível construir tudo diretamente no lado do cliente sem a necessidade de recursos externos.</p>
+<p><strong>Velocidade</strong><br>Como não é necessário enviar dados para um servidor, as inferências são mais rápidas. Mais do que isso, é possível ter acesso direto aos sensores do dispositivo como câmera, microfone, GPUs, acelerômetro e etc.</p>
+<p><strong>Escala</strong><br>Com somente um clique, qualquer pessoa do mundo pode abrir um link, acessar uma página no navegador e utilizar a aplicação que você construiu. Não é necessário máquinas caras ou configurações de servidores caros com drivers <a href="https://developer.nvidia.com/cuda-toolkit" target="_blank">CUDA</a>.</p>
+<p><strong>Custo</strong><br>A única coisa que é necessária para rodar sua aplicação é internet para hospedar arquivos HTML, CSS, JS, arquivos e modelos. Um custo muito mais barato do que rodar um servidor com GPUs caras 24⁄7.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Modelos pré-treinados" duration="1">
+        <p>O Tensorflow.js fornece uma variedade de modelos de machine leaarning pré-treinados em diferentes contextos. Eles foram desenvolvidos pelo time do google e envelopados em classes, tornando o uso bem simples e direto.</p>
+<p>Sem dúvidas, utilizar esses modelos é a melhor forma de dar os primeiros passos com Machine Learning em JavaScript. Você pode encontrar uma lista deles na <a href="https://www.tensorflow.org/js/models" target="_blank">página do Tensorflow.js</a> ou no <a href="https://tfhub.dev/s?deployment-format=tfjs" target="_blank">Tensorflow Hub</a>.</p>
+<h2 is-upgraded>Por quê usar um modelo pré-treinado?</h2>
+<p>Existem vários beneficios em começar uma aplicação com um modelo pré-treinado se ele se encaixa no problema que você está buscando resolver:</p>
+<ol type="1">
+<li><strong>Não é necessário coletar e preparar os dados de treinamento</strong>:  Preparar os dados no formato correto de forma com que o modelo de machine learning consiga consumir pode ser demorado e custoso.</li>
+<li><strong>Fácil prototipação</strong>: Ao pensar em uma aplicação, não precisamos reinventar a roda - muitas vezes, um modelo pré-treinado é capaz de resolver o problema. Dessa forma, é possível focar nos benefícios que a solução traz e não em seu processo de construção.</li>
+<li><strong>Uso do estado da arte</strong>:  Geralmente, os modelos pré-treinados são baseados em soluções consolidadas e eficientes. Usá-los, significa trabalhar com o que há de melhor em  código aberto no momento.</li>
+<li>Transfer learning: A maioria dos modelos pré-treinados oferecem a possibilidade de transfer learning, que é a prática de transferir o aprendizado de uma tarefa para outra que apresenta um contexto semelhante.</li>
+</ol>
+<h2 is-upgraded>O que é o COCO-SSD?</h2>
+<p>COCO-SSD é o nome do modelo pré-treinado que iremos utilizar nesse projeto. O objetivo dele é localizar e identificar multiplos objetos em uma imagem. Em outras palavras, ele informa a localização dos objetos que ele é capaz de reconhecer. Um exemplo é mostrado na imagem a seguir:</p>
+<p class="image-container"><img alt="alt text" title="Exemplo_cacau" src="img/7ea1c0326485ed6d.png"></p>
+<p>Se houvesse mais do que um cachorro , o modelo iria fornecer as coordenadas e classe de ambos. O COCO-SSD foi treinado para reconhecer <a href="https://github.com/tensorflow/tfjs-models/blob/master/coco-ssd/src/classes.ts" target="_blank">90 objetos diferentes</a> e que estão presentes em nosso dia a dia como pessoas, carros, cachorros, garradas, etc.</p>
+<h2 is-upgraded>De onde vêm esses nomes?</h2>
+<p>Os nomes podem soar estranhos, mas eles são frutos de duas siglas distintas:</p>
+<ul>
+<li>COCO: Refere-se ao fato de que o modelo foi treinado no dataset <a href="https://cocodataset.org/#home" target="_blank">Objetos Comuns em Contexto</a> (*C*ommon *O*bjects in *CO*ntext). Ele possui mais de 200 mil imagens, foi construido pela Microsoft e está disponível gratuitamente.</li>
+<li>SSD: É um detector de shot único (Single Shot Detector). Se você tem interesse em como é arquitetura do modelo, você pode saber mais <a href="https://towardsdatascience.com/understanding-ssd-multibox-real-time-object-detection-in-deep-learning-495ef744fab" target="_blank">aqui</a>.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Configurando o ambiente" duration="1">
+        <h2 is-upgraded>O que você vai precisar:</h2>
+<ul>
+<li>Um navegador web</li>
+<li>Conhecimentos básicos de HTML, CSS e JavaScript</li>
+</ul>
+<h2 is-upgraded>Bora codar</h2>
+<p>Caso não tenha, crie uma conta no <a href="https://glitch.com/" target="_blank">Glitch</a> e abra o template que foi desenvolvido para dar inicio ao desenvolvimento do projeto.</p>
+<p><a href="https://glitch.com/edit/#!/deteccao-objetos-tf" target="_blank">Abrir template</a></p>
+<p>No Glitch, clique sobre o nome do projeto e selecione <strong>remix this</strong>  para criar uma cópia do repositório.</p>
+<p>Esse é um projeto muito simples com os seguintes arquivos:</p>
+<ul>
+<li>HTML page (index.html)</li>
+<li>Stylesheet (style.css)</li>
+<li>File to write our JavaScript code (script.js)</li>
+</ul>
+<p>Estamos prontos para dar o ínicio ao desenvolvimento do projeto!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Criando o código HTML" duration="1">
+        <p>Todo projeto web necessita de um esqueleto HTML básico. Vamos usá-lo para renderizar a saída do modelo de Machine Learning mais tarde. Por enquanto, vamos definir o básico:</p>
+<ul>
+<li>Um título para a página</li>
+<li>Texto de descrição</li>
+<li>Um botão para ativar a webcam</li>
+<li>Importar o tensorflow.js</li>
+</ul>
+<p>Para fazer isso, abra o arquivo <code>index.html</code> remova o conteúdo existente e cole o seguinte trecho de código:</p>
+<p><strong>index.html</strong></p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+  &lt;head&gt;
+    &lt;title&gt;Detecção de objetos em tempo real utilizando um modelo pré-treinado em Tensorflow.js&lt;/title&gt;
+    &lt;meta charset=&#34;utf-8&#34;&gt;
+    &lt;!-- Import the webpage&#39;s stylesheet --&gt;
+    &lt;link rel=&#34;stylesheet&#34; href=&#34;style.css&#34;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Detecção de objetos em tempo real utilizando um modelo pré-treinado e Tensorflow.js&lt;/h1&gt;
+    &lt;p&gt;Espere o modelo ser carregado para clicar no botão &#34;Ativar Webcam&#34;.&lt;/p&gt;
+    &lt;section id=&#34;demos&#34; class=&#34;invisible&#34;&gt;
+        &lt;p&gt;Caso o navegador solicite, aprove o acesso a câmera (verifique o canto superior direito da página). &lt;br/&gt;&lt;br/&gt;
+         Segure algum objeto perto da câmera para realizar uma classificação em tempo real!&lt;/p&gt;
+        &lt;div id=&#34;liveView&#34; class=&#34;camView&#34;&gt;
+            &lt;button id=&#34;webcamButton&#34;&gt;Ativar Webcam&lt;/button&gt;                                                       
+            &lt;video id=&#34;webcam&#34; autoplay width=&#34;640&#34; height=&#34;480&#34;&gt;&lt;/video&gt;      
+            &lt;/div&gt;    
+    &lt;/section&gt;
+    
+    &lt;!-- Import TensorFlow.js library --&gt;
+    &lt;script src=&#34;https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js&#34; type=&#34;text/javascript&#34;&gt;&lt;/script&gt;
+    &lt;!-- Load the coco-ssd model to use to recognize things in images --&gt;
+    &lt;script src=&#34;https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd&#34;&gt;&lt;/script&gt;
+
+    &lt;!-- Import the page&#39;s JavaScript to do some stuff --&gt;    
+    &lt;script src=&#34;script.js&#34; defer&gt;&lt;/script&gt;  
+  &lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+<p>Se tudo correr bem, você irá ver a seguinte tela:</p>
+<p class="image-container"><img alt="alt text" title="Screen 1" src="img/57bbf8d0d11871c1.PNG"></p>
+<aside class="special"><p><strong>Dica</strong>: Você pode visualizar seu trabalho no Glitch clicando no botão <strong>Show</strong> no canto superior esquerdo da tela e selecionando a opção <strong>Next to The Code</strong>.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Adicionando estilo" duration="1">
+        <p>Agora, vamos definir as cores e estilos do nosso projeto. Abra o arquivo <code>style.css</code> e adicione o seguinte trecho de código (sobrescrevendo o anterior):</p>
+<p><strong>style.css</strong></p>
+<pre><code>body {
+  font-family: helvetica, arial, sans-serif;
+  margin: 2em;
+  color: #3D3D3D;
+}
+
+h1 {
+  font-style: italic;
+  color: #FF6F00;
+}
+
+video {
+  display: block;
+}
+
+section {
+  opacity: 1;
+  transition: opacity 500ms ease-in-out;
+}
+
+</code></pre>
+<p>Logo abaixo, adicione algumas classes CSS com os diferentes estados da nossa interface de usuário, como quando gostaríamos de ocultar os botões ou fazer a demonstração indisponível caso o modelo ainda não esteja carregado.</p>
+<p><strong>style.css</strong></p>
+<pre><code>.removed {
+  display: none;
+}
+
+.invisible {
+  opacity: 0.2;
+}
+
+.camView {
+  position: relative;
+  float: left;
+  width: calc(100% - 20px);
+  margin: 10px;
+  cursor: pointer;
+}
+
+.camView p {
+  position: absolute;
+  padding: 5px;
+  background-color: rgba(45, 42, 38, 0.85);
+  color: #FFF;
+  border: 1px dashed rgba(255, 255, 255, 0.7);
+  z-index: 2;
+  font-size: 12px;
+}
+
+.highlighter {
+  background: rgba(0, 255, 0, 0.25);
+  border: 1px dashed #fff;
+  z-index: 1;
+  position: absolute;
+}
+
+</code></pre>
+<p>Boa! Se tudo foi feito corretamente, você irá ver a seguinte tela:</p>
+<p class="image-container"><img alt="alt text" title="Screen 2" src="img/ef66da0a36e3aa81.PNG"></p>
+<p>Note como a área de demonstração e botão de &#34;Ativar Webcam&#34; estão indisponíveis. O HTML tem a classe &#34;invisible&#34; aplicada por default. Iremos utilizar JavaScript para desabilitar essa classe assim que o modelo estiver pronto para uso.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Criando o código JavaScript" duration="1">
+        <aside class="special"><p><strong>Dica</strong>: O código desta seção é mostrado em ordem, mas quebrado em pequenos pedaços para facilitar as explicações. Se você copiar e colar cada um desses trechos ao final do arquivo <code>script.js</code>, tudo deve funcionar perfeitamente.</p>
+</aside>
+<h2 is-upgraded>Acessando os elementos chave</h2>
+<p>Primeiro, garanta que é possível acessar as partes chave da página que vamos precisar manipular ao longo do código</p>
+<p><strong>script.js</strong></p>
+<pre><code>const video = document.getElementById(&#39;webcam&#39;);
+const liveView = document.getElementById(&#39;liveView&#39;);
+const demosSection = document.getElementById(&#39;demos&#39;);
+const enableWebcamButton = document.getElementById(&#39;webcamButton&#39;);
+</code></pre>
+<h2 is-upgraded>Verificando o acesso a webcam</h2>
+<p>Vamos adicionar algumas funções auxiliares para checar se o navegador utilizado suporta o acesso a streaming de vídeo via <code>getUserMedia</code>.</p>
+<p><strong>script.js</strong></p>
+<pre><code>// Check if webcam access is supported.
+function getUserMediaSupported() {
+  return !!(navigator.mediaDevices &amp;&amp;
+    navigator.mediaDevices.getUserMedia);
+}
+
+// If webcam supported, add event listener to button for when user
+// wants to activate it to call enableCam function which we will 
+// define in the next step.
+if (getUserMediaSupported()) {
+  enableWebcamButton.addEventListener(&#39;click&#39;, enableCam);
+} else {
+  console.warn(&#39;getUserMedia() is not supported by your browser&#39;);
+}
+</code></pre>
+<h2 is-upgraded>Ativando o streaming</h2>
+<p>Agora, ative o streaming e disponibilize uma visualização para o usuário:</p>
+<p><strong>script.js</strong></p>
+<pre><code>// Enable the live webcam view and start classification.
+function enableCam(event) {
+  // Only continue if the COCO-SSD has finished loading.
+  if (!model) {
+    return;
+  }
+  
+  // Hide the button once clicked.
+  event.target.classList.add(&#39;removed&#39;);  
+  
+  // getUsermedia parameters to force video but not audio.
+  const constraints = {
+    video: true
+  };
+
+  // Activate the webcam stream.
+  navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+    video.srcObject = stream;
+    video.addEventListener(&#39;loadeddata&#39;, predictWebcam);
+  });
+}
+</code></pre>
+<p>Por fim, adicione um código temporário só para testar se a webcam está funcionando.</p>
+<p>O código a seguir vai assumir que o modelo está carregado e vai ativar o botão da câmera para que você possa clicar. Vamos substituir esse código na próxima etapa então <strong>lembre-se de removê-lo no próximo passo!</strong></p>
+<p><strong>script.js</strong></p>
+<pre><code>// Placeholder function for next step.
+function predictWebcam() {
+}
+
+// Pretend model has loaded so we can try out the webcam code.
+var model = true;
+demosSection.classList.remove(&#39;invisible&#39;);
+</code></pre>
+<aside class="special"><p><strong>Teste</strong>: Nesse momento, se você rodar o código como ele está e clicar no botão &#34;Ativar Webcam&#34; você deverá ver um streaming de vídeo.</p>
+</aside>
+<p>Ótimo! Provavelmente você está vendo uma tela similar a essa:</p>
+<p class="image-container"><img alt="alt text" title="Screen 3" src="img/b60c5ddf0db2e804.PNG"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Usando o modelo de Machine Learning" duration="1">
+        <h2 is-upgraded>Carregando o modelo</h2>
+<p>Agora, vamos carregar o modelo COCO-SSD.</p>
+<p>Assim que ele terminar de ser inicializado, iremos habilitar o botão de ativar a webcam. Cole o código a seguir sobre o código temporário que adicionamos ao final da última etapa.</p>
+<p><strong>script.js</strong></p>
+<pre><code>// Store the resulting model in the global scope of our app.
+var model = undefined;
+
+// Before we can use COCO-SSD class we must wait for it to finish
+// loading. Machine Learning models can be large and take a moment 
+// to get everything needed to run.
+// Note: cocoSsd is an external object loaded from our index.html
+// script tag import so ignore any warning in Glitch.
+cocoSsd.load().then(function (loadedModel) {
+  model = loadedModel;
+  // Show demo section now model is ready to use.
+  demosSection.classList.remove(&#39;invisible&#39;);
+});
+</code></pre>
+<h2 is-upgraded>Classificando um frame a partir da Webcam</h2>
+<p>Adicione o código a seguir para que a aplicação consuma continuamente os frames da webcam e passe ao modelo para que eles sejam classificados.</p>
+<p>O modelo irá retornar as coordenadas, precisão e classe das predições. Essas informações serão utilizadas para renderizar os resultados.</p>
+<p><strong>script.js</strong></p>
+<pre><code>var children = [];
+
+function predictWebcam() {
+  // Now let&#39;s start classifying a frame in the stream.
+  model.detect(video).then(function (predictions) {
+    // Remove any highlighting we did previous frame.
+    for (let i = 0; i &lt; children.length; i++) {
+      liveView.removeChild(children[i]);
+    }
+    children.splice(0);
+    
+    // Now lets loop through predictions and draw them to the live view if
+    // they have a high confidence score.
+    for (let n = 0; n &lt; predictions.length; n++) {
+      // If we are over 66% sure we are sure we classified it right, draw it!
+      if (predictions[n].score &gt; 0.66) {
+        const p = document.createElement(&#39;p&#39;);
+        p.innerText = predictions[n].class  + &#39; - with &#39; 
+            + Math.round(parseFloat(predictions[n].score) * 100) 
+            + &#39;% confidence&#39;;
+        p.style = &#39;margin-left: &#39; + predictions[n].bbox[0] + &#39;px; margin-top: &#39;
+            + (predictions[n].bbox[1] - 10) + &#39;px; width: &#39; 
+            + (predictions[n].bbox[2] - 10) + &#39;px; top: 0; left: 0;&#39;;
+
+        const highlighter = document.createElement(&#39;div&#39;);
+        highlighter.setAttribute(&#39;class&#39;, &#39;highlighter&#39;);
+        highlighter.style = &#39;left: &#39; + predictions[n].bbox[0] + &#39;px; top: &#39;
+            + predictions[n].bbox[1] + &#39;px; width: &#39; 
+            + predictions[n].bbox[2] + &#39;px; height: &#39;
+            + predictions[n].bbox[3] + &#39;px;&#39;;
+
+        liveView.appendChild(highlighter);
+        liveView.appendChild(p);
+        children.push(highlighter);
+        children.push(p);
+      }
+    }
+    
+    // Call this function again to keep predicting when the browser is ready.
+    window.requestAnimationFrame(predictWebcam);
+  });
+}
+</code></pre>
+<p>A parte mais importante desse código é o <code>model.detect</code>.</p>
+<p>Todos modelos pré-treinados do Tensorflow.js têm uma função como essa. Ela é responsável por realizar o processo de inferência do modelo.</p>
+<p>Inferência é o processo de pegar uma entrada e passar através do modelo de machine learning (várias operações matemáticas) e então gerar resultados. Em tensorflow, as predições são retornadas na forma de objetos JSON, que são bem simples de serem utilizados.</p>
+<p>Você pode encontrar todos os detalhes da função de predição na <a href="https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd" target="_blank">documentação do COCO-SSD</a>.</p>
+<p>Ao rodar o código, o resultado final deve ser similar a este:</p>
+<p class="image-container"><img alt="alt text" title="Screen 4" src="img/ba8dcaba5d3e6407.PNG"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Parabéns" duration="1">
+        <p>Parabéns! Você deu seus primeiros passos no uso de Tensorflow.js e Machine Learning no navegador. Agora, só depende de você pegar tudo que aprendeu para criar algo criativo e útil :)</p>
+<h3 is-upgraded>Resumo</h3>
+<p>Nesse treinamento nós:</p>
+<ul>
+<li>Aprendemos os benefícios de se utilizar Tensorflow.js em comparação ao Tensorflow padrão</li>
+<li>Discutimos situações em que é possível utilizar modelos pré-treinados</li>
+<li>Criamos uma aplicação web completa que é capaz de classificar objetos em tempo real, incluindo:<br><br><ul>
+<li>Criação de uma página HTML</li>
+<li>Definição de estilos para elementos HTML e classes</li>
+<li>Configuração e carregamento de um modelo pré-treinado em Tensorflow.js</li>
+<li>Uso do modelo para fazer classificações continuas do streaming da webcam e renderização dos resultados.</li>
+</ul>
+</li>
+</ul>
+<h2 is-upgraded>Próximos passos</h2>
+<p>Compartilhe as suas criações nas redes sociais! Você pode desenvolver inúmeras aplicações com os aprendizados desse seção.</p>
+<p>Veja todos os objetos que o modelo utilizado é capaz de reconhecer e pense como você pode utilizar o conhecimento adiquirido para criar algo inovador.</p>
+<p>Poste seu resultado com a tag #MadeWithTFJS em qualquer rede social e o time do Tensorflow estará de olho nos resultados.</p>
+<h2 is-upgraded>Outros projetos para se aprofundar</h2>
+<p><a href="https://blog.tensorflow.org/2021/01/custom-object-detection-in-browser.html" target="_blank">Detecção customizada de objetos no navegador utilizando Tensorflow.js</a></p>
+<p><a href="https://codelabs.developers.google.com/codelabs/tensorflowjs-audio-codelab/index.html?index=..%2F..index#0" target="_blank">Reconhecimento de áudio utilizando transfer learning  em TensorFlow.js</a></p>
+<h2 is-upgraded>Sites para visitar</h2>
+<p><a href="https://www.tensorflow.org/js" target="_blank">Site oficial do TensorFlow.js</a></p>
+<p><a href="https://www.tensorflow.org/js/models" target="_blank">Modelos pré-treinados em TensorFlow.js</a></p>
+<p><a href="https://js.tensorflow.org/api/latest/" target="_blank">TensorFlow.js API</a></p>
+<p><a href="https://github.com/tensorflow/tfjs-examples/" target="_blank">TensorFlow.js Demos</a></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
