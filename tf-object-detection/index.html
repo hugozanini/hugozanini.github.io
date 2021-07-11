@@ -28,10 +28,10 @@
                   feedback-link="https://github.com/hugozanini">
     
       <google-codelab-step label="Antes de você começar" duration="1">
-        <p>Nesse tutorial, vamos dar os primeiros passos com Machine Learning em Javascript. Utilizando Tensorflow.js, iremos construir uma aplicação web capaz de classificar e detectar objetos comuns de nosso dia a dia utilizando a webcam de qualquer dispositivo.</p>
-<p>Ao final, é esperado que você seja capaz de detectar mais de 80 classes diferentes em tempo real e produza resultados como o a seguir:</p>
+        <p>Neste tutorial, vamos dar os primeiros passos com Machine Learning em Javascript. Utilizando Tensorflow.js, iremos construir uma aplicação web capaz de classificar e detectar objetos comuns de nosso dia a dia utilizando a webcam de qualquer dispositivo.</p>
+<p>Ao final, é esperado que você seja capaz de detectar mais de 80 classes diferentes em tempo real e produza resultados como a seguir:</p>
 <p class="image-container"><img alt="alt text" title="Title" src="img/3b0d560c1c55a3f.png"></p>
-<p>Esse tipo de aplicação permite com que você crie inúmeras soluções em sua industria ou situações rotineiras. Imagine detectar e contar as pessoas que encontram-se uma área controlada dentro de uma fábrica ou identificar quando seu cachorro está na cozinha da sua casa e enviar uma mensagem para o seu celular... Tudo isso pode ser feito utilizando o modelo que iremos trabalhar nessa seção.</p>
+<p>Esse tipo de aplicação permite que você crie inúmeras soluções em sua indústria ou situações rotineiras. Imagine detectar e contar às pessoas que encontram-se uma área controlada dentro de uma fábrica ou identificar quando seu cachorro está na cozinha da sua casa e enviar uma mensagem para o seu celular... Tudo isso pode ser feito utilizando o modelo que iremos trabalhar nessa seção.</p>
 <p>Curtiu?</p>
 <p>Então pegue uma dose extra de café e bora criar uma câmera inteligente utilizando Machine Learning 🤓</p>
 <aside class="special"><p>Esse tutorial é focado em mostrar como dar os primeiros passos com modelos pré-treinados em Tensorflow.js. Conceitos e blocos de código que não são relevantes para entender Tensorflow ou Machine Learning não serão explicados.</p>
@@ -54,7 +54,7 @@
 <p>O Tensorflow.js suporta diferentes backends e se adapta de acordo com o ambiente em que está sendo executado. Atualmente, ele suporta as seguintes formas de execução:</p>
 <ul>
 <li><strong>WebGL na placa gráfica do dispositivo (GPU)</strong>: Essa é a maneira mais rápida de executar modelos grandes  (maiores que 3MB) com aceleração em GPU.</li>
-<li><strong>Web Assembly (WASM) na CPU</strong>:  utilizado para melhor a performance de CPUs nos dispositivos - incluindo smartphones de gerações mais antigas. Geralmente é utilizada em modelos pequenos (menores que 3MB) que são mais rápidos ao serem executados em uma CPI com WASM to que com WebGL devido ao overhead se subir com os dados para um processador gráfico.<br>*</li>
+<li><strong>Web Assembly (WASM) na CPU</strong>:  utilizado para melhor a performance de CPUs nos dispositivos - incluindo smartphones de gerações mais antigas. Geralmente é utilizada em modelos pequenos (menores que 3MB) que são mais rápidos ao serem executados em uma CPI com WASM to que com WebGL devido ao overhead se subir com os dados para um processador gráfico.</li>
 <li><strong>CPU</strong>:  Utilizado quando nenhuma das duas formas de execução anterioes estão disponíveis. É a forma de execução mais lenta.</li>
 </ul>
 <aside class="special"><p>Você pode <a href="https://www.tensorflow.org/js/guide/platform_environment" target="_blank">forçar a execução</a> de qualquer um desses backends caso você saiba em que ambiente a execução será feita, ou deixar que Tensorflow.js escolha a melhor opção para você.</p>
@@ -72,23 +72,23 @@
       <google-codelab-step label="Modelos pré-treinados" duration="1">
         <p>O Tensorflow.js fornece uma variedade de modelos de machine leaarning pré-treinados em diferentes contextos. Eles foram desenvolvidos pelo time do google e envelopados em classes, tornando o uso bem simples e direto.</p>
 <p>Sem dúvidas, utilizar esses modelos é a melhor forma de dar os primeiros passos com Machine Learning em JavaScript. Você pode encontrar uma lista deles na <a href="https://www.tensorflow.org/js/models" target="_blank">página do Tensorflow.js</a> ou no <a href="https://tfhub.dev/s?deployment-format=tfjs" target="_blank">Tensorflow Hub</a>.</p>
-<h2 is-upgraded>Por quê usar um modelo pré-treinado?</h2>
+<h2 is-upgraded>Por que usar um modelo pré-treinado?</h2>
 <p>Existem vários beneficios em começar uma aplicação com um modelo pré-treinado se ele se encaixa no problema que você está buscando resolver:</p>
 <ol type="1">
 <li><strong>Não é necessário coletar e preparar os dados de treinamento</strong>:  Preparar os dados no formato correto de forma com que o modelo de machine learning consiga consumir pode ser demorado e custoso.</li>
 <li><strong>Fácil prototipação</strong>: Ao pensar em uma aplicação, não precisamos reinventar a roda - muitas vezes, um modelo pré-treinado é capaz de resolver o problema. Dessa forma, é possível focar nos benefícios que a solução traz e não em seu processo de construção.</li>
 <li><strong>Uso do estado da arte</strong>:  Geralmente, os modelos pré-treinados são baseados em soluções consolidadas e eficientes. Usá-los, significa trabalhar com o que há de melhor em  código aberto no momento.</li>
-<li>Transfer learning: A maioria dos modelos pré-treinados oferecem a possibilidade de transfer learning, que é a prática de transferir o aprendizado de uma tarefa para outra que apresenta um contexto semelhante.</li>
+<li><strong>Transfer learning</strong>: A maioria dos modelos pré-treinados oferecem a possibilidade de transfer learning, que é a prática de transferir o aprendizado de uma tarefa para outra que apresenta um contexto semelhante.</li>
 </ol>
 <h2 is-upgraded>O que é o COCO-SSD?</h2>
-<p>COCO-SSD é o nome do modelo pré-treinado que iremos utilizar nesse projeto. O objetivo dele é localizar e identificar multiplos objetos em uma imagem. Em outras palavras, ele informa a localização dos objetos que ele é capaz de reconhecer. Um exemplo é mostrado na imagem a seguir:</p>
+<p>COCO-SSD é o nome do modelo pré-treinado que iremos utilizar neste projeto. O objetivo dele é localizar e identificar múltiplos objetos em uma imagem. Em outras palavras, ele informa a localização dos objetos que ele é capaz de reconhecer. Um exemplo é mostrado na imagem a seguir:</p>
 <p class="image-container"><img alt="alt text" title="Exemplo_cacau" src="img/7ea1c0326485ed6d.png"></p>
 <p>Se houvesse mais do que um cachorro , o modelo iria fornecer as coordenadas e classe de ambos. O COCO-SSD foi treinado para reconhecer <a href="https://github.com/tensorflow/tfjs-models/blob/master/coco-ssd/src/classes.ts" target="_blank">90 objetos diferentes</a> e que estão presentes em nosso dia a dia como pessoas, carros, cachorros, garradas, etc.</p>
 <h2 is-upgraded>De onde vêm esses nomes?</h2>
 <p>Os nomes podem soar estranhos, mas eles são frutos de duas siglas distintas:</p>
 <ul>
-<li>COCO: Refere-se ao fato de que o modelo foi treinado no dataset <a href="https://cocodataset.org/#home" target="_blank">Objetos Comuns em Contexto</a> (*C*ommon *O*bjects in *CO*ntext). Ele possui mais de 200 mil imagens, foi construido pela Microsoft e está disponível gratuitamente.</li>
-<li>SSD: É um detector de shot único (Single Shot Detector). Se você tem interesse em como é arquitetura do modelo, você pode saber mais <a href="https://towardsdatascience.com/understanding-ssd-multibox-real-time-object-detection-in-deep-learning-495ef744fab" target="_blank">aqui</a>.</li>
+<li>COCO: Refere-se ao fato de que o modelo foi treinado no dataset <a href="https://cocodataset.org/#home" target="_blank">Objetos Comuns em Contexto</a> (Common Objects in COntext). Ele possui mais de 200 mil imagens, foi construído pela Microsoft e está disponível gratuitamente.</li>
+<li>SSD: É um detector de shot único (Single Shot Detector). Se você tem interesse em como é a arquitetura do modelo, você pode saber mais <a href="https://towardsdatascience.com/understanding-ssd-multibox-real-time-object-detection-in-deep-learning-495ef744fab" target="_blank">aqui</a>.</li>
 </ul>
 
 
@@ -101,16 +101,16 @@
 <li>Conhecimentos básicos de HTML, CSS e JavaScript</li>
 </ul>
 <h2 is-upgraded>Bora codar</h2>
-<p>Caso não tenha, crie uma conta no <a href="https://glitch.com/" target="_blank">Glitch</a> e abra o template que foi desenvolvido para dar inicio ao desenvolvimento do projeto.</p>
+<p>Caso não tenha, crie uma conta no <a href="https://glitch.com/" target="_blank">Glitch</a> e abra o template que foi desenvolvido para dar início ao desenvolvimento do projeto.</p>
 <p><a href="https://glitch.com/edit/#!/deteccao-objetos-tf" target="_blank">Abrir template</a></p>
 <p>No Glitch, clique sobre o nome do projeto e selecione <strong>remix this</strong>  para criar uma cópia do repositório.</p>
-<p>Esse é um projeto muito simples com os seguintes arquivos:</p>
+<p>Este é um projeto muito simples com os seguintes arquivos:</p>
 <ul>
 <li>HTML page (index.html)</li>
 <li>Stylesheet (style.css)</li>
 <li>File to write our JavaScript code (script.js)</li>
 </ul>
-<p>Estamos prontos para dar o ínicio ao desenvolvimento do projeto!</p>
+<p>Estamos prontos para dar o início ao desenvolvimento do projeto!</p>
 
 
       </google-codelab-step>
@@ -226,7 +226,7 @@ section {
 </code></pre>
 <p>Boa! Se tudo foi feito corretamente, você irá ver a seguinte tela:</p>
 <p class="image-container"><img alt="alt text" title="Screen 2" src="img/ef66da0a36e3aa81.PNG"></p>
-<p>Note como a área de demonstração e botão de &#34;Ativar Webcam&#34; estão indisponíveis. O HTML tem a classe &#34;invisible&#34; aplicada por default. Iremos utilizar JavaScript para desabilitar essa classe assim que o modelo estiver pronto para uso.</p>
+<p>Note como a área de demonstração e o botão de &#34;Ativar Webcam&#34; estão indisponíveis. O HTML tem a classe &#34;invisible&#34; aplicada por default. Iremos utilizar JavaScript para desabilitar essa classe assim que o modelo estiver pronto para uso.</p>
 
 
       </google-codelab-step>
@@ -286,7 +286,7 @@ function enableCam(event) {
 }
 </code></pre>
 <p>Por fim, adicione um código temporário só para testar se a webcam está funcionando.</p>
-<p>O código a seguir vai assumir que o modelo está carregado e vai ativar o botão da câmera para que você possa clicar. Vamos substituir esse código na próxima etapa então <strong>lembre-se de removê-lo no próximo passo!</strong></p>
+<p>O código a seguir vai assumir que o modelo está carregado e vai ativar o botão da câmera para que você possa clicar. Vamos substituir esse código na próxima etapa, então <strong>lembre-se de removê-lo no próximo passo!</strong></p>
 <p><strong>script.js</strong></p>
 <pre><code>// Placeholder function for next step.
 function predictWebcam() {
@@ -391,13 +391,13 @@ function predictWebcam() {
 <li>Criação de uma página HTML</li>
 <li>Definição de estilos para elementos HTML e classes</li>
 <li>Configuração e carregamento de um modelo pré-treinado em Tensorflow.js</li>
-<li>Uso do modelo para fazer classificações continuas do streaming da webcam e renderização dos resultados.</li>
+<li>Uso do modelo para fazer classificações contínuas do streaming da webcam e renderização dos resultados.</li>
 </ul>
 </li>
 </ul>
 <h2 is-upgraded>Próximos passos</h2>
-<p>Compartilhe as suas criações nas redes sociais! Você pode desenvolver inúmeras aplicações com os aprendizados desse seção.</p>
-<p>Veja todos os objetos que o modelo utilizado é capaz de reconhecer e pense como você pode utilizar o conhecimento adiquirido para criar algo inovador.</p>
+<p>Compartilhe as suas criações nas redes sociais! Você pode desenvolver inúmeras aplicações com os aprendizados dessa seção.</p>
+<p>Veja todos os objetos que o modelo utilizado é capaz de reconhecer e pense como você pode utilizar o conhecimento adquirido para criar algo inovador.</p>
 <p>Poste seu resultado com a tag #MadeWithTFJS em qualquer rede social e o time do Tensorflow estará de olho nos resultados.</p>
 <h2 is-upgraded>Outros projetos para se aprofundar</h2>
 <p><a href="https://blog.tensorflow.org/2021/01/custom-object-detection-in-browser.html" target="_blank">Detecção customizada de objetos no navegador utilizando Tensorflow.js</a></p>
